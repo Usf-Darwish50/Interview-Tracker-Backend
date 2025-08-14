@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class InterviewTrackerApplication {
 
 	public static void main(String[] args) {
-		EnvironmentLoader.load(args);
+		//EnvironmentLoader.load(args);
 
 
 	}
