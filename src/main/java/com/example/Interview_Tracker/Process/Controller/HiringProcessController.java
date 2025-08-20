@@ -1,44 +1,62 @@
 package com.example.Interview_Tracker.Process.Controller;
 
+import com.example.Interview_Tracker.Process.DTO.HiringProcessDTO;
 import com.example.Interview_Tracker.Process.Model.HiringProcess;
 import com.example.Interview_Tracker.Process.Service.HiringProcessService;
+import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/processes")
+@RequestMapping("interview-tracker/api/processes")
 public class HiringProcessController {
 
-    private final HiringProcessService processService;
+    @Autowired
+    private HiringProcessService hiringProcessService;
 
-    public HiringProcessController(HiringProcessService processService) {
-        this.processService = processService;
+    @PostMapping
+    public ResponseEntity<HiringProcessDTO> addNewHiringProcess(@Valid @RequestBody HiringProcess newHiringProcess) {
+        HiringProcess savedHiringProcess = hiringProcessService.createProcess(newHiringProcess);
+        HiringProcessDTO dto = convertToDto(savedHiringProcess);
+        return ResponseEntity.status(HttpStatus.CREATED).body(dto);
     }
 
     @GetMapping
-    public List<HiringProcess> getAllProcesses() {
-        return processService.getAllProcesses();
+    public ResponseEntity<List<HiringProcessDTO>> findAllHiringProcesses() {
+        List<HiringProcessDTO> hiringProcesses = hiringProcessService.findAll();
+        return ResponseEntity.ok(hiringProcesses);
     }
 
     @GetMapping("/{id}")
-    public HiringProcess getProcessById(@PathVariable int id) {
-        return processService.getProcessById(id);
-    }
-
-    @PostMapping
-    public HiringProcess createProcess(@RequestBody HiringProcess process) {
-        return processService.createProcess(process);
+    public ResponseEntity<HiringProcessDTO> findHiringProcessById(@PathVariable int id) {
+        HiringProcessDTO hiringProcess = hiringProcessService.findById(id);
+        return ResponseEntity.ok(hiringProcess);
     }
 
     @PutMapping("/{id}")
-    public HiringProcess updateProcess(@PathVariable int id, @RequestBody HiringProcess processDetails) {
-        return processService.updateProcess(id, processDetails);
+    public ResponseEntity<HiringProcessDTO> updateHiringProcess(@PathVariable int id, @Valid @RequestBody HiringProcess hiringProcessDetails) {
+        HiringProcess updatedHiringProcess = hiringProcessService.updateProcess(id, hiringProcessDetails);
+        HiringProcessDTO dto = convertToDto(updatedHiringProcess);
+        return ResponseEntity.ok(dto);
     }
 
     @DeleteMapping("/{id}")
-    public String deleteProcess(@PathVariable int id) {
-        return processService.deleteProcess(id) ? "Deleted successfully" : "Process not found";
+    public ResponseEntity<Void> softDeleteHiringProcessById(@PathVariable int id) {
+        hiringProcessService.softDeleteProcessById(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    private HiringProcessDTO convertToDto(HiringProcess entity) {
+        HiringProcessDTO dto = new HiringProcessDTO();
+        dto.setProcessId(entity.getProcessId());
+        dto.setTitle(entity.getTitle());
+        dto.setStatus(entity.getStatus());
+        dto.setCreatedDate(entity.getCreatedDate());
+        dto.setCreatedBy(entity.getManager().getUsername());
+        return dto;
     }
 }
-

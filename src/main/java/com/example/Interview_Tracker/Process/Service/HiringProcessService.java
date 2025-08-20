@@ -1,59 +1,98 @@
 package com.example.Interview_Tracker.Process.Service;
 
+import com.example.Interview_Tracker.Exception.ErrorCode;
+import com.example.Interview_Tracker.Exception.ResourceNotFoundException;
+import com.example.Interview_Tracker.Process.DTO.HiringProcessDTO;
 import com.example.Interview_Tracker.Process.Model.HiringProcess;
 import com.example.Interview_Tracker.Process.Repository.HiringProcessRepo;
+import com.example.Interview_Tracker.User.Model.Manager;
+import com.example.Interview_Tracker.User.Repository.ManagerRepo;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class HiringProcessService {
 
     private final HiringProcessRepo processRepo;
+    private final ManagerRepo managerRepo;
 
-    public HiringProcessService(HiringProcessRepo processRepo) {
+    public HiringProcessService(HiringProcessRepo processRepo, ManagerRepo managerRepo) {
+
         this.processRepo = processRepo;
+        this.managerRepo = managerRepo;
     }
 
-    // Get all processes
-    public List<HiringProcess> getAllProcesses() {
-        return processRepo.findAll();
-    }
 
-    // Get process by ID
-    public HiringProcess getProcessById(int id) {
-        return processRepo.findById(id).orElse(null);
-    }
-
-    // Create process
+    @Transactional
     public HiringProcess createProcess(HiringProcess process) {
+        // Find the manager by ID before saving the process
+        Manager manager = managerRepo.findById(process.getManager().getManagerId())
+                .orElseThrow(() -> new ResourceNotFoundException("Manager not found.", ErrorCode.RESOURCE_NOT_FOUND));
+
+        process.setManager(manager); // Set the full manager object
+        process.setCreatedDate(Date.from(Instant.now()));
         return processRepo.save(process);
     }
 
-    // Update process
-    public HiringProcess updateProcess(int id, HiringProcess processDetails) {
-        HiringProcess existing = processRepo.findById(id).orElse(null);
+    // Get all non-deleted processes and convert them to DTOs
+    public List<HiringProcessDTO> findAll() {
+        return this.processRepo.findByIsDeletedFalse().stream().map(this::toDto)
+                .collect(Collectors.toList());
+    }
 
-        if (existing == null) {
-            return null;
+    // Get a single process by ID and convert it to a DTO
+    public HiringProcessDTO findById(int id) {
+        return this.processRepo.findByProcessIdAndIsDeletedFalse(id)
+                .map(this::toDto)
+                .orElseThrow(() -> new ResourceNotFoundException("Hiring Process with id " + id + " not found.", ErrorCode.RESOURCE_NOT_FOUND));
+    }
+
+    // Update process
+    @Transactional
+    public HiringProcess updateProcess(int id, HiringProcess processDetails) {
+        HiringProcess existingProcess = this.processRepo.findByProcessIdAndIsDeletedFalse(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Hiring Process with id " + id + " not found.", ErrorCode.RESOURCE_NOT_FOUND));
+
+        if (processDetails.getTitle() != null) {
+            existingProcess.setTitle(processDetails.getTitle());
+        }
+        if (processDetails.getStatus() != null) {
+            existingProcess.setStatus(processDetails.getStatus());
         }
 
-        existing.setTitle(processDetails.getTitle());
-        existing.setStatus(processDetails.getStatus());
-        existing.setCreatedDate(processDetails.getCreatedDate());
-        existing.setManagerId(processDetails.getManagerId());
+        // This is important to update the manager
+        if (processDetails.getManager() != null && processDetails.getManager().getManagerId() > 0) {
+            Manager manager = managerRepo.findById(processDetails.getManager().getManagerId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Manager not found.", ErrorCode.RESOURCE_NOT_FOUND));
+            existingProcess.setManager(manager);
+        }
 
-        return processRepo.save(existing);
+        return processRepo.save(existingProcess);
     }
 
     // Soft delete
-    public boolean deleteProcess(int id) {
-        HiringProcess existing = processRepo.findById(id).orElse(null);
-        if (existing != null) {
-            existing.setDeleted(true);
-            processRepo.save(existing);
-            return true;
-        }
-        return false;
+    @Transactional
+    public void softDeleteProcessById(int id) {
+        HiringProcess existing = processRepo.findByProcessIdAndIsDeletedFalse(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Hiring Process with id " + id + " not found.", ErrorCode.RESOURCE_NOT_FOUND));
+
+        existing.setDeleted(true);
+        processRepo.save(existing);
+    }
+
+    // This is the private method that converts the entity to a DTO.
+    private HiringProcessDTO toDto(HiringProcess entity) {
+        HiringProcessDTO dto = new HiringProcessDTO();
+        dto.setProcessId(entity.getProcessId());
+        dto.setTitle(entity.getTitle());
+        dto.setStatus(entity.getStatus());
+        dto.setCreatedDate(entity.getCreatedDate());
+        dto.setCreatedBy(entity.getManager().getUsername());
+        return dto;
     }
 }

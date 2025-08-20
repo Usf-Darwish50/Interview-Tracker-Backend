@@ -1,8 +1,12 @@
 package com.example.Interview_Tracker.Process.Model;
 
+import com.example.Interview_Tracker.User.Model.Manager;
 import com.example.Interview_Tracker.enums.ProcessStatus;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
 import java.util.Date;
@@ -11,11 +15,12 @@ import java.util.Date;
 @Entity
 @Table(name = "hiring_processes")
 @SQLRestriction("is_deleted = false")
+@SQLDelete(sql = "UPDATE hiring_processes SET is_deleted = true WHERE process_id = ?")
 public class HiringProcess {
 
     @Id
     @SequenceGenerator(
-            initialValue = 500,
+            initialValue = 0,
             allocationSize = 1,
             sequenceName = "hiring_process_id_seq",
             name = "hiring_process_id_seq"
@@ -34,12 +39,15 @@ public class HiringProcess {
     @Column(name = "created_date", nullable = false)
     private Date createdDate;
 
-    // Foreign key from managers table
-    @Column(name = "manager_id")
-    private int managerId;
+
+    // Establishing the Many-to-One relationship with Manager
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "manager_id", nullable = false)
+    @JsonBackReference
+    private Manager manager;
 
     @Column(name = "is_deleted")
-    private boolean Deleted = false;
+    private boolean isDeleted = false;
 
 
 }
