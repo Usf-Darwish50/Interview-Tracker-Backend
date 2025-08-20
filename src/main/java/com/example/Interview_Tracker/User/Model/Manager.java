@@ -38,7 +38,7 @@ public class Manager {
     private boolean isDeleted = false;
 
     // Establishing the One-to-Many relationship with HiringProcess
-    @OneToMany(mappedBy = "manager", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "manager")
     @JsonManagedReference
     private List<HiringProcess> hiringProcesses;
 

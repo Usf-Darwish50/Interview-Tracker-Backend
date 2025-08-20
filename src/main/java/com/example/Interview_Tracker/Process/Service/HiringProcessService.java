@@ -85,6 +85,16 @@ public class HiringProcessService {
         processRepo.save(existing);
     }
 
+
+    @Transactional
+    public void softDeleteByManagerId(int managerId) {
+        List<HiringProcess> processes = this.processRepo.findByManager_ManagerId(managerId);
+        for (HiringProcess process : processes) {
+            process.setDeleted(true);
+            this.processRepo.save(process);
+        }
+    }
+
     // This is the private method that converts the entity to a DTO.
     private HiringProcessDTO toDto(HiringProcess entity) {
         HiringProcessDTO dto = new HiringProcessDTO();

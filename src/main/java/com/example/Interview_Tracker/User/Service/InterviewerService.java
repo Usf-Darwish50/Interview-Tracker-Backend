@@ -26,7 +26,7 @@ public class InterviewerService {
     }
 
     public Interviewer findById(int id) {
-        return this.interviewerRepo.findByInterviewerIdAndIsDeletedFalse(id)
+        return this.interviewerRepo.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Interviewer with id " + id + " not found.", ErrorCode.RESOURCE_NOT_FOUND));
     }
 

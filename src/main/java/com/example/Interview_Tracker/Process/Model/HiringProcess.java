@@ -20,7 +20,7 @@ public class HiringProcess {
 
     @Id
     @SequenceGenerator(
-            initialValue = 0,
+            initialValue = 1,
             allocationSize = 1,
             sequenceName = "hiring_process_id_seq",
             name = "hiring_process_id_seq"
