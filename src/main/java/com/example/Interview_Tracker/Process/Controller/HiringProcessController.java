@@ -50,6 +50,13 @@ public class HiringProcessController {
         return ResponseEntity.noContent().build();
     }
 
+
+    @PutMapping("/end/{id}")
+    public ResponseEntity<Void> endProcess(@PathVariable int id) {
+        hiringProcessService.endProcessById(id);
+        return ResponseEntity.noContent().build();
+    }
+
     private HiringProcessDTO convertToDto(HiringProcess entity) {
         HiringProcessDTO dto = new HiringProcessDTO();
         dto.setProcessId(entity.getProcessId());

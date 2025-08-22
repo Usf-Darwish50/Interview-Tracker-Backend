@@ -7,6 +7,7 @@ import com.example.Interview_Tracker.Process.Model.HiringProcess;
 import com.example.Interview_Tracker.Process.Repository.HiringProcessRepo;
 import com.example.Interview_Tracker.User.Model.Manager;
 import com.example.Interview_Tracker.User.Repository.ManagerRepo;
+import com.example.Interview_Tracker.enums.ProcessStatus;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -82,6 +83,17 @@ public class HiringProcessService {
                 .orElseThrow(() -> new ResourceNotFoundException("Hiring Process with id " + id + " not found.", ErrorCode.RESOURCE_NOT_FOUND));
 
         existing.setDeleted(true);
+        processRepo.save(existing);
+    }
+
+
+    //End process
+    @Transactional
+    public void endProcessById(int id) {
+        HiringProcess existing = processRepo.findByProcessIdAndIsDeletedFalse(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Hiring Process with id " + id + " not found.", ErrorCode.RESOURCE_NOT_FOUND));
+
+        existing.setStatus(ProcessStatus.COMPLETED);
         processRepo.save(existing);
     }
 
