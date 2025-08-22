@@ -2,6 +2,7 @@ package com.example.Interview_Tracker.User.Model;
 
 import com.example.Interview_Tracker.Stage.Model.Stage;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.SQLDelete;
@@ -31,6 +32,9 @@ public class Interviewer {
     @Column(name = "phone", length = 11)
     private String phone;
 
+    @Column(name = "postion", length = 100)
+    private String postion;
+
     @Column(name = "password", nullable = false, length = 255)
     private String password;
 
@@ -39,15 +43,8 @@ public class Interviewer {
 
 
 
-    //Many to Many between interviewers and candidates
-    @ManyToMany(cascade = {
-            CascadeType.PERSIST,
-            CascadeType.MERGE
-    })
-    @JoinTable(name = "interviewer_stage",
-            joinColumns = @JoinColumn(name = "interviewer_id"),
-            inverseJoinColumns = @JoinColumn(name = "stage_id")
-    )
+    @OneToMany(mappedBy = "interviewer")
     @JsonIgnore
-    private Set<Stage> assignedStages = new HashSet<>();
+    private Set<Stage> assignedStages;
+
 }

@@ -1,13 +1,16 @@
 package com.example.Interview_Tracker.User.Model;
 
 import com.example.Interview_Tracker.Process.Model.HiringProcess;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @Entity
@@ -38,8 +41,10 @@ public class Manager {
     private boolean isDeleted = false;
 
     // Establishing the One-to-Many relationship with HiringProcess
+    // Change the relationship to a Set and initialize it
     @OneToMany(mappedBy = "manager")
-    @JsonManagedReference
-    private List<HiringProcess> hiringProcesses;
+    @JsonIgnore
+    private Set<HiringProcess> hiringProcesses = new HashSet<>(); // <-- Initialize here
+
 
 }

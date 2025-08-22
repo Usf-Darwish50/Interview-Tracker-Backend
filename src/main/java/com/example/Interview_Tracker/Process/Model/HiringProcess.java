@@ -5,6 +5,7 @@ import com.example.Interview_Tracker.User.Model.Manager;
 import com.example.Interview_Tracker.enums.ProcessStatus;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -46,13 +47,14 @@ public class HiringProcess {
     // Many-to-One relationship with Manager
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "manager_id", nullable = false)
-    @JsonBackReference
+     @JsonIgnore
+
     private Manager manager;
 
 
     // One-to-Many relationship with Stage
     @OneToMany(mappedBy = "hiringProcess", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
+    @JsonIgnore
     private List<Stage> stages;
 
     @Column(name = "is_deleted")

@@ -4,6 +4,7 @@ import com.example.Interview_Tracker.Process.Model.HiringProcess;
 import com.example.Interview_Tracker.User.Model.Interviewer;
 import com.example.Interview_Tracker.enums.StageStatus;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.SQLDelete;
@@ -48,7 +49,7 @@ public class Stage {
     // Many-to-One relationship to HiringProcess
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "process_id", nullable = false)
-    @JsonBackReference
+    @JsonIgnore
     private HiringProcess hiringProcess;
 
     @Column(name = "is_deleted")
@@ -56,7 +57,10 @@ public class Stage {
 
 
 
-    @ManyToMany(mappedBy = "assignedStages")
-    private Set<Interviewer> assignedInterviewers = new HashSet<>();
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "interviewer_id")
+    @JsonIgnore
+    private Interviewer interviewer;
+
 
 }

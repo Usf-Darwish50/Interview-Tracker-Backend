@@ -53,11 +53,14 @@ public class StageController {
     }
 
 
-    // New endpoint to assign interviewers to a stage
-    @PutMapping("/{stageId}/assign-interviewers")
-    public ResponseEntity<Stage> assignInterviewersToStage(@PathVariable int stageId, @RequestBody Map<String, List<Integer>> payload) {
-        List<Integer> interviewerIds = payload.get("interviewerIds");
-        Stage updatedStage = stageService.assignInterviewersToStage(stageId, interviewerIds);
+    // Modified endpoint to assign a single interviewer to a stage
+    @PutMapping("/{stageId}/assign-interviewer")
+    public ResponseEntity<Stage> assignInterviewerToStage(@PathVariable int stageId, @RequestBody Map<String, Integer> payload) {
+        Integer interviewerId = payload.get("interviewerId");
+        if (interviewerId == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        Stage updatedStage = stageService.assignInterviewerToStage(stageId, interviewerId);
         return ResponseEntity.ok(updatedStage);
     }
 }

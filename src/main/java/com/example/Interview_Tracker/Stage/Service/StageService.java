@@ -123,19 +123,14 @@ public class StageService {
     }
 
 
-    // New method to assign interviewers to a stage
+    // Modified method to assign a single interviewer to a stage
     @Transactional
-    public Stage assignInterviewersToStage(int stageId, List<Integer> interviewerIds) {
+    public Stage assignInterviewerToStage(int stageId, int interviewerId) {
         Stage stage = findById(stageId);
-        Set<Interviewer> interviewers = interviewerIds.stream()
-                .map(id -> interviewerRepo.findById(id)
-                        .orElseThrow(() -> new ResourceNotFoundException("Interviewer with id " + id + " not found.", ErrorCode.RESOURCE_NOT_FOUND)))
-                .collect(Collectors.toSet());
+        Interviewer interviewer = interviewerRepo.findById(interviewerId)
+                .orElseThrow(() -> new ResourceNotFoundException("Interviewer with id " + interviewerId + " not found.", ErrorCode.RESOURCE_NOT_FOUND));
 
-        // Clear existing assignments to replace them
-        stage.getAssignedInterviewers().clear();
-        stage.getAssignedInterviewers().addAll(interviewers);
-
+        stage.setInterviewer(interviewer); // Set the single interviewer
         return stageRepo.save(stage);
     }
 }
