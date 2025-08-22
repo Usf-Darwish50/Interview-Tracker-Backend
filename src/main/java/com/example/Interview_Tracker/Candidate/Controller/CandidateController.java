@@ -1,5 +1,6 @@
 package com.example.Interview_Tracker.Candidate.Controller;
 
+import com.example.Interview_Tracker.Candidate.DTO.CandidateAssignmentResponseDTO;
 import com.example.Interview_Tracker.Candidate.DTO.NewCandidateDTO;
 import com.example.Interview_Tracker.Candidate.Model.Candidate;
 import com.example.Interview_Tracker.Candidate.Service.CandidateService;
@@ -40,5 +41,27 @@ public class CandidateController {
     public ResponseEntity<Void> softDeleteCandidateById(@PathVariable int id) {
         candidateService.softDeleteCandidateById(id);
         return ResponseEntity.noContent().build();
+    }
+
+
+    // Updated endpoint to return the new DTO
+    @PutMapping("/{candidateId}/assign/{processId}")
+    public ResponseEntity<CandidateAssignmentResponseDTO> assignCandidateToProcess(@PathVariable int candidateId, @PathVariable int processId) {
+        CandidateAssignmentResponseDTO responseDTO = candidateService.assignCandidateToProcess(candidateId, processId);
+        return ResponseEntity.ok(responseDTO);
+    }
+
+    // Updated endpoint to return the new DTO
+    @PutMapping("/{candidateId}/next-stage")
+    public ResponseEntity<CandidateAssignmentResponseDTO> moveCandidateToNextStage(@PathVariable int candidateId) {
+        CandidateAssignmentResponseDTO responseDTO = candidateService.moveCandidateToNextStage(candidateId);
+        return ResponseEntity.ok(responseDTO);
+    }
+
+    // New endpoint to reject a candidate
+    @PutMapping("/{candidateId}/reject")
+    public ResponseEntity<Candidate> rejectCandidate(@PathVariable int candidateId) {
+        Candidate updatedCandidate = candidateService.rejectCandidate(candidateId);
+        return ResponseEntity.ok(updatedCandidate);
     }
 }

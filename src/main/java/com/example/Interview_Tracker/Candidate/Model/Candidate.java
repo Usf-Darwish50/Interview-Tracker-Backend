@@ -1,5 +1,6 @@
 package com.example.Interview_Tracker.Candidate.Model;
 
+import com.example.Interview_Tracker.Process.Model.HiringProcess;
 import com.example.Interview_Tracker.Stage.Model.Stage;
 import com.example.Interview_Tracker.enums.CandidateStatus;
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -41,10 +42,15 @@ public class Candidate {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 20)
-    private CandidateStatus status;
+    private CandidateStatus status = CandidateStatus.PENDING;
 
 
-    // Corrected: Establish a Many-to-One relationship to the Stage entity
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "process_id")
+    @JsonBackReference
+    private HiringProcess hiringProcess;
+
+    // Many-to-One relationship to the Stage entity
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "current_stage_id")
     @JsonBackReference
