@@ -1,15 +1,18 @@
 package com.example.Interview_Tracker.Process.Model;
 
+import com.example.Interview_Tracker.Stage.Model.Stage;
 import com.example.Interview_Tracker.User.Model.Manager;
 import com.example.Interview_Tracker.enums.ProcessStatus;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 @Entity
@@ -40,11 +43,17 @@ public class HiringProcess {
     private Date createdDate;
 
 
-    // Establishing the Many-to-One relationship with Manager
+    // Many-to-One relationship with Manager
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "manager_id", nullable = false)
     @JsonBackReference
     private Manager manager;
+
+
+    // One-to-Many relationship with Stage
+    @OneToMany(mappedBy = "hiringProcess", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<Stage> stages;
 
     @Column(name = "is_deleted")
     private boolean isDeleted = false;

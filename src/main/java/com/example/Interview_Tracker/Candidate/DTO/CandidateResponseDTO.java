@@ -1,5 +1,6 @@
 package com.example.Interview_Tracker.Candidate.DTO;
 
+import com.example.Interview_Tracker.Stage.Model.Stage;
 import com.example.Interview_Tracker.enums.CandidateStatus;
 import lombok.Data;
 
@@ -11,5 +12,6 @@ public class CandidateResponseDTO {
     private String phone;
     private String position;
     private CandidateStatus status;
+    private Stage currentStage;
     private String cvUrl;
 }

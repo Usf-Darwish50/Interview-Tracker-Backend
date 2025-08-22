@@ -1,6 +1,8 @@
 package com.example.Interview_Tracker.Candidate.Model;
 
+import com.example.Interview_Tracker.Stage.Model.Stage;
 import com.example.Interview_Tracker.enums.CandidateStatus;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.SQLDelete;
@@ -42,9 +44,11 @@ public class Candidate {
     private CandidateStatus status;
 
 
-    //Foreign key from stages
-    @Column(name = "current_stage_id")
-    private int currentStageId;
+    // Corrected: Establish a Many-to-One relationship to the Stage entity
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "current_stage_id")
+    @JsonBackReference
+    private Stage currentStage;
 
     @Column(name = "is_deleted")
     private boolean isDeleted = false;
