@@ -1,12 +1,16 @@
 package com.example.Interview_Tracker.Stage.Model;
 
 import com.example.Interview_Tracker.Process.Model.HiringProcess;
+import com.example.Interview_Tracker.User.Model.Interviewer;
 import com.example.Interview_Tracker.enums.StageStatus;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @Entity
@@ -49,4 +53,10 @@ public class Stage {
 
     @Column(name = "is_deleted")
     private boolean isDeleted = false;
+
+
+
+    @ManyToMany(mappedBy = "assignedStages")
+    private Set<Interviewer> assignedInterviewers = new HashSet<>();
+
 }

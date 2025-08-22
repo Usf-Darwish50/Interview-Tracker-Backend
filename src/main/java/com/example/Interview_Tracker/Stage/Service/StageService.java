@@ -7,12 +7,16 @@ import com.example.Interview_Tracker.Process.Model.HiringProcess;
 import com.example.Interview_Tracker.Process.Repository.HiringProcessRepo;
 import com.example.Interview_Tracker.Stage.Model.Stage;
 import com.example.Interview_Tracker.Stage.Repository.StageRepo;
+import com.example.Interview_Tracker.User.Model.Interviewer;
+import com.example.Interview_Tracker.User.Repository.InterviewerRepo;
 import com.example.Interview_Tracker.enums.StageStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class StageService {
@@ -21,6 +25,10 @@ public class StageService {
 
     @Autowired
     private HiringProcessRepo processRepo;
+
+
+    @Autowired
+    private InterviewerRepo interviewerRepo;
 
 
     // Get all non-deleted stages
@@ -112,5 +120,22 @@ public class StageService {
             nextStage.setStatus(StageStatus.IN_PROGRESS);
             stageRepo.save(nextStage);
         }
+    }
+
+
+    // New method to assign interviewers to a stage
+    @Transactional
+    public Stage assignInterviewersToStage(int stageId, List<Integer> interviewerIds) {
+        Stage stage = findById(stageId);
+        Set<Interviewer> interviewers = interviewerIds.stream()
+                .map(id -> interviewerRepo.findById(id)
+                        .orElseThrow(() -> new ResourceNotFoundException("Interviewer with id " + id + " not found.", ErrorCode.RESOURCE_NOT_FOUND)))
+                .collect(Collectors.toSet());
+
+        // Clear existing assignments to replace them
+        stage.getAssignedInterviewers().clear();
+        stage.getAssignedInterviewers().addAll(interviewers);
+
+        return stageRepo.save(stage);
     }
 }

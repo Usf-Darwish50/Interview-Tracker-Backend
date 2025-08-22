@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("interview-tracker/api/processes/{processId}/stages")
@@ -49,5 +50,14 @@ public class StageController {
     public ResponseEntity<Void> softDeleteStageById(@PathVariable int id) {
         stageService.softDeleteStageById(id);
         return ResponseEntity.noContent().build();
+    }
+
+
+    // New endpoint to assign interviewers to a stage
+    @PutMapping("/{stageId}/assign-interviewers")
+    public ResponseEntity<Stage> assignInterviewersToStage(@PathVariable int stageId, @RequestBody Map<String, List<Integer>> payload) {
+        List<Integer> interviewerIds = payload.get("interviewerIds");
+        Stage updatedStage = stageService.assignInterviewersToStage(stageId, interviewerIds);
+        return ResponseEntity.ok(updatedStage);
     }
 }
