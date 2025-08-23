@@ -15,7 +15,7 @@ import java.util.Set;
 @Entity
 @Table(name = "interviewers")
 @SQLRestriction("is_deleted = false")
-@SQLDelete(sql = "UPDATE candidates SET is_deleted = true WHERE interviewer_id = ?")
+@SQLDelete(sql = "UPDATE interviewers SET is_deleted = true WHERE interviewer_id = ?")
 public class Interviewer {
 
     @Id
