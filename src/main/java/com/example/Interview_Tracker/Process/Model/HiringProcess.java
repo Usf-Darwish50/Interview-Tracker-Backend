@@ -1,5 +1,6 @@
 package com.example.Interview_Tracker.Process.Model;
 
+import com.example.Interview_Tracker.Candidate.Model.Candidate;
 import com.example.Interview_Tracker.Stage.Model.Stage;
 import com.example.Interview_Tracker.User.Model.Manager;
 import com.example.Interview_Tracker.enums.ProcessStatus;
@@ -56,6 +57,10 @@ public class HiringProcess {
     @OneToMany(mappedBy = "hiringProcess", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<Stage> stages;
+
+    // Add this new list to link candidates to the process
+    @OneToMany(mappedBy = "hiringProcess", fetch = FetchType.LAZY)
+    private List<Candidate> candidates;
 
     @Column(name = "is_deleted")
     private boolean isDeleted = false;

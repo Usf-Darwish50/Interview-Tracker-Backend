@@ -5,10 +5,12 @@ import com.example.Interview_Tracker.Exception.ErrorCode;
 import com.example.Interview_Tracker.Exception.ResourceNotFoundException;
 import com.example.Interview_Tracker.Process.Model.HiringProcess;
 import com.example.Interview_Tracker.Process.Repository.HiringProcessRepo;
+import com.example.Interview_Tracker.Process.Service.HiringProcessService;
 import com.example.Interview_Tracker.Stage.Model.Stage;
 import com.example.Interview_Tracker.Stage.Repository.StageRepo;
 import com.example.Interview_Tracker.User.Model.Interviewer;
 import com.example.Interview_Tracker.User.Repository.InterviewerRepo;
+import com.example.Interview_Tracker.enums.ProcessStatus;
 import com.example.Interview_Tracker.enums.StageStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,6 +27,9 @@ public class StageService {
 
     @Autowired
     private HiringProcessRepo processRepo;
+    @Autowired
+    private HiringProcessService hiringProcessService;
+
 
 
     @Autowired
@@ -98,6 +103,11 @@ public class StageService {
         } else {
             stage.setStageOrder(existingStages.size() + 1);
             stage.setStatus(StageStatus.NOT_STARTED); // Subsequent stages are NOT_STARTED
+        }
+
+        // New: Check if the process is not started and update its status
+        if (hiringProcess.getStatus() == ProcessStatus.NOT_STARTED) {
+            hiringProcessService.updateProcessStatus(hiringProcess.getProcessId(), ProcessStatus.IN_PROGRESS);
         }
 
         return stageRepo.save(stage);

@@ -1,6 +1,8 @@
 package com.example.Interview_Tracker.Process.Controller;
 
+import com.example.Interview_Tracker.Candidate.Model.Candidate;
 import com.example.Interview_Tracker.Process.DTO.HiringProcessDTO;
+import com.example.Interview_Tracker.Process.DTO.NewHiringProcessDTO;
 import com.example.Interview_Tracker.Process.Model.HiringProcess;
 import com.example.Interview_Tracker.Process.Service.HiringProcessService;
 import jakarta.validation.Valid;
@@ -19,10 +21,9 @@ public class HiringProcessController {
     private HiringProcessService hiringProcessService;
 
     @PostMapping
-    public ResponseEntity<HiringProcessDTO> addNewHiringProcess(@Valid @RequestBody HiringProcess newHiringProcess) {
-        HiringProcess savedHiringProcess = hiringProcessService.createProcess(newHiringProcess);
-        HiringProcessDTO dto = convertToDto(savedHiringProcess);
-        return ResponseEntity.status(HttpStatus.CREATED).body(dto);
+    public ResponseEntity<HiringProcess> addNewHiringProcess(@Valid @RequestBody NewHiringProcessDTO dto) {
+        HiringProcess newProcess = hiringProcessService.createProcess(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(newProcess);
     }
 
     @GetMapping
@@ -57,6 +58,18 @@ public class HiringProcessController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/{processId}/candidates")
+    public ResponseEntity<List<Candidate>> getCandidatesByProcessId(@PathVariable int processId) {
+        List<Candidate> candidates = hiringProcessService.findCandidatesByProcessId(processId);
+        return ResponseEntity.ok(candidates);
+    }
+
+    // New endpoint to get the count of candidates in a process
+    @GetMapping("/{processId}/candidates/count")
+    public ResponseEntity<Long> getCandidateCountByProcessId(@PathVariable int processId) {
+        long count = hiringProcessService.countCandidatesByProcessId(processId);
+        return ResponseEntity.ok(count);
+    }
     private HiringProcessDTO convertToDto(HiringProcess entity) {
         HiringProcessDTO dto = new HiringProcessDTO();
         dto.setProcessId(entity.getProcessId());

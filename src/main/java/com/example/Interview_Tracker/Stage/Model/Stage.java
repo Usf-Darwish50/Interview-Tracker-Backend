@@ -59,7 +59,6 @@ public class Stage {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "interviewer_id")
-    @JsonIgnore
     private Interviewer interviewer;
 
 
