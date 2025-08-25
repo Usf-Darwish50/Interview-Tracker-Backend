@@ -29,11 +29,11 @@ public class Interviewer {
     @Column(name = "email", nullable = false, unique = true, length = 100)
     private String email;
 
-    @Column(name = "phone", length = 11)
+    @Column(name = "phone")
     private String phone;
 
-    @Column(name = "postion", length = 100)
-    private String postion;
+    @Column(name = "position", length = 100)
+    private String position;
 
     @Column(name = "password", nullable = false, length = 255)
     private String password;

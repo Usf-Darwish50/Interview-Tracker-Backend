@@ -1,6 +1,7 @@
 package com.example.Interview_Tracker.Candidate.Controller;
 
 import com.example.Interview_Tracker.Candidate.DTO.CandidateAssignmentResponseDTO;
+import com.example.Interview_Tracker.Candidate.DTO.CandidateDetailDTO;
 import com.example.Interview_Tracker.Candidate.DTO.NewCandidateDTO;
 import com.example.Interview_Tracker.Candidate.Model.Candidate;
 import com.example.Interview_Tracker.Candidate.Service.CandidateService;
@@ -35,6 +36,12 @@ public class CandidateController {
     public ResponseEntity<Candidate> findCandidateById(@PathVariable int id) {
         Candidate candidate = candidateService.findById(id);
         return ResponseEntity.ok(candidate);
+    }
+
+    @GetMapping("/details/{id}")
+    public ResponseEntity<CandidateDetailDTO> findCandidateDetailsById(@PathVariable int id) {
+        CandidateDetailDTO candidateDTO = candidateService.findByIdWithProcessInfo(id);
+        return ResponseEntity.ok(candidateDTO);
     }
 
     @DeleteMapping("/{id}")

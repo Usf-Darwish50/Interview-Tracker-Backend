@@ -5,6 +5,8 @@ import com.example.Interview_Tracker.Process.DTO.HiringProcessDTO;
 import com.example.Interview_Tracker.Process.DTO.NewHiringProcessDTO;
 import com.example.Interview_Tracker.Process.Model.HiringProcess;
 import com.example.Interview_Tracker.Process.Service.HiringProcessService;
+import com.example.Interview_Tracker.Stage.Model.Stage;
+import com.example.Interview_Tracker.Stage.Service.StageService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,6 +21,8 @@ public class HiringProcessController {
 
     @Autowired
     private HiringProcessService hiringProcessService;
+    @Autowired
+    private StageService stageService;
 
     @PostMapping
     public ResponseEntity<HiringProcess> addNewHiringProcess(@Valid @RequestBody NewHiringProcessDTO dto) {
@@ -69,6 +73,14 @@ public class HiringProcessController {
     public ResponseEntity<Long> getCandidateCountByProcessId(@PathVariable int processId) {
         long count = hiringProcessService.countCandidatesByProcessId(processId);
         return ResponseEntity.ok(count);
+    }
+
+
+    // FIX: Add a new endpoint to get all stages for a process
+    @GetMapping("/{processId}/stages")
+    public ResponseEntity<List<Stage>> getStagesByProcessId(@PathVariable int processId) {
+        List<Stage> stages = stageService.findAllStagesByProcessId(processId);
+        return ResponseEntity.ok(stages);
     }
     private HiringProcessDTO convertToDto(HiringProcess entity) {
         HiringProcessDTO dto = new HiringProcessDTO();

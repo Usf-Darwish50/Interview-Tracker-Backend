@@ -10,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("interview-tracker/api/processes/{processId}/stages")
@@ -25,13 +24,13 @@ public class StageController {
         return ResponseEntity.status(HttpStatus.CREATED).body(savedStage);
     }
 
-
-    @GetMapping
-    public ResponseEntity<List<Stage>> findAllStagesForProcess(@PathVariable int processId) {
-
-        List<Stage> stages = stageService.findAllByProcessId(processId);
-        return ResponseEntity.ok(stages);
-    }
+// Move to process controller
+//    @GetMapping
+//    public ResponseEntity<List<Stage>> findAllStagesForProcess(@PathVariable int processId) {
+//
+//        List<Stage> stages = stageService.findAllStagesByProcessId(processId);
+//        return ResponseEntity.ok(stages);
+//    }
 
     @GetMapping("/{id}")
     public ResponseEntity<Stage> findStageById(@PathVariable int id) {

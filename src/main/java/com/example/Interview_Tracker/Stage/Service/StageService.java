@@ -17,8 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 public class StageService {
@@ -42,7 +40,7 @@ public class StageService {
     }
 
     // Add the new method to find stages by hiring process ID
-    public List<Stage> findAllByProcessId(int processId) {
+    public List<Stage> findAllStagesByProcessId(int processId) {
         return stageRepo.findByHiringProcess_ProcessId(processId);
     }
 

@@ -1,6 +1,7 @@
 package com.example.Interview_Tracker.Candidate.Service;
 
 import com.example.Interview_Tracker.Candidate.DTO.CandidateAssignmentResponseDTO;
+import com.example.Interview_Tracker.Candidate.DTO.CandidateDetailDTO;
 import com.example.Interview_Tracker.Candidate.DTO.NewCandidateDTO;
 import com.example.Interview_Tracker.Candidate.Model.Candidate;
 import com.example.Interview_Tracker.Candidate.Repository.CandidateRepo;
@@ -47,7 +48,29 @@ public class CandidateService {
         return this.candidateRepo.findByCandidateIdAndIsDeletedFalse(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Candidate with id " + id + " not found.", ErrorCode.RESOURCE_NOT_FOUND));
     }
+// Inside your CandidateService class
 
+    public CandidateDetailDTO findByIdWithProcessInfo(int id) {
+        Candidate candidate = this.candidateRepo.findByCandidateIdAndIsDeletedFalse(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Candidate with id " + id + " not found.", ErrorCode.RESOURCE_NOT_FOUND));
+
+        CandidateDetailDTO dto = new CandidateDetailDTO();
+        dto.setCandidateId(candidate.getCandidateId());
+        dto.setFullName(candidate.getFullName());
+        dto.setEmail(candidate.getEmail());
+        dto.setPhone(candidate.getPhone());
+        dto.setAddress(candidate.getAddress());
+        dto.setPosition(candidate.getPosition());
+        dto.setCvUrl(candidate.getCvUrl());
+        dto.setStatus(candidate.getStatus());
+
+        // Set the process ID if it exists
+        if (candidate.getHiringProcess() != null) {
+            dto.setHiringProcessId(candidate.getHiringProcess().getProcessId());
+        }
+
+        return dto;
+    }
 
     @Transactional
     public void softDeleteCandidateById(int id) {
