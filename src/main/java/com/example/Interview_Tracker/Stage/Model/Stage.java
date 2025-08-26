@@ -1,10 +1,12 @@
 package com.example.Interview_Tracker.Stage.Model;
 
+import com.example.Interview_Tracker.Feedback.Model.Feedback;
 import com.example.Interview_Tracker.Process.Model.HiringProcess;
 import com.example.Interview_Tracker.User.Model.Interviewer;
 import com.example.Interview_Tracker.enums.StageStatus;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.SQLDelete;
@@ -60,6 +62,7 @@ public class Stage {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "interviewer_id")
     private Interviewer interviewer;
+
 
 
 }

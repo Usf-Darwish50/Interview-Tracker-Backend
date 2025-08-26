@@ -6,24 +6,33 @@ import com.example.Interview_Tracker.Feedback.DTO.NewFeedbackDTO;
 import com.example.Interview_Tracker.Feedback.Model.Feedback;
 import com.example.Interview_Tracker.Feedback.Service.FeedbackService;
 import jakarta.validation.Valid;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import org.slf4j.Logger; // Correct import for SLF4J Logger
+import org.slf4j.LoggerFactory;
 
 @RestController
 @RequestMapping("interview-tracker/api/feedbacks")
 public class FeedbackController {
+
+    private static final Logger logger = LoggerFactory.getLogger(FeedbackController.class);
+
     @Autowired
     private FeedbackService feedbackService;
 
+
+
     @PostMapping
-    public ResponseEntity<Feedback> addFeedback(@Valid @RequestBody NewFeedbackDTO dto) {
-        Feedback newFeedback = feedbackService.addFeedback(dto);
+    public ResponseEntity<FeedbackResponseDTO> addFeedback(@Valid @RequestBody NewFeedbackDTO dto) {
+        FeedbackResponseDTO newFeedback = feedbackService.addFeedback(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(newFeedback);
     }
+
 
     @GetMapping
     public ResponseEntity<List<Feedback>> getAllFeedback() {
@@ -44,11 +53,7 @@ public class FeedbackController {
         return ResponseEntity.ok(feedbacks);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Feedback> updateFeedback(@PathVariable int id, @Valid @RequestBody NewFeedbackDTO dto) {
-        Feedback updatedFeedback = feedbackService.updateFeedback(id, dto);
-        return ResponseEntity.ok(updatedFeedback);
-    }
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> softDeleteFeedback(@PathVariable int id) {
@@ -58,6 +63,7 @@ public class FeedbackController {
     // New: Add a specific exception handler for ResourceNotFoundException
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<String> handleResourceNotFoundException(ResourceNotFoundException ex) {
+        logger.error("Resource not found: {}", ex.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
 }

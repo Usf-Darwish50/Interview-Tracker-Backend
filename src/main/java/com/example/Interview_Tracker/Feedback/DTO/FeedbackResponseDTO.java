@@ -11,7 +11,5 @@ public class FeedbackResponseDTO {
 
     private String feedbackText;
     private String candidateName;
-    private String stageTitle;
-    private String processTitle;
-    private String interviewerName;
+
 }

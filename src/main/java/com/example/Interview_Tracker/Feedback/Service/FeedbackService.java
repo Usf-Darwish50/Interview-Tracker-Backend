@@ -29,30 +29,25 @@ public class FeedbackService {
     @Autowired
     private CandidateRepo candidateRepo;
 
-    @Autowired
-    private StageRepo stageRepo;
 
-    @Autowired
-    private InterviewerRepo interviewerRepo;
 
     @Transactional
-    public Feedback addFeedback(NewFeedbackDTO dto) {
+    public FeedbackResponseDTO addFeedback(NewFeedbackDTO dto) {
         Candidate candidate = candidateRepo.findById(dto.getCandidateId())
                 .orElseThrow(() -> new ResourceNotFoundException("Candidate with id " + dto.getCandidateId() + " not found.", ErrorCode.RESOURCE_NOT_FOUND));
 
-        Stage stage = stageRepo.findById(dto.getStageId())
-                .orElseThrow(() -> new ResourceNotFoundException("Stage with id " + dto.getStageId() + " not found.", ErrorCode.RESOURCE_NOT_FOUND));
-
-        Interviewer interviewer = interviewerRepo.findById(dto.getInterviewerId())
-                .orElseThrow(() -> new ResourceNotFoundException("Interviewer with id " + dto.getInterviewerId() + " not found.", ErrorCode.RESOURCE_NOT_FOUND));
 
         Feedback feedback = new Feedback();
         feedback.setFeedbackText(dto.getFeedbackText());
         feedback.setCandidate(candidate);
-        feedback.setStage(stage);
-        feedback.setInterviewer(interviewer);
 
-        return feedbackRepo.save(feedback);
+        Feedback savedFeedback = feedbackRepo.save(feedback);
+
+        // Create and return the DTO
+        return new FeedbackResponseDTO(
+                savedFeedback.getFeedbackText(),
+                savedFeedback.getCandidate().getFullName()
+                 );
     }
 
 
@@ -77,20 +72,17 @@ public class FeedbackService {
         return feedbacks.stream()
                 .map(feedback -> new FeedbackResponseDTO(
                         feedback.getFeedbackText(),
-                        feedback.getCandidate().getFullName(),
-                        feedback.getStage().getTitle(),
-                        feedback.getStage().getHiringProcess().getTitle(), // Access the process title
-                        feedback.getInterviewer().getUsername()
+                        feedback.getCandidate().getFullName()
                 ))
                 .collect(Collectors.toList());
     }
 
-    @Transactional
-    public Feedback updateFeedback(int id, NewFeedbackDTO dto) {
-        Feedback feedback = findFeedbackById(id);
-        feedback.setFeedbackText(dto.getFeedbackText());
-        return feedbackRepo.save(feedback);
-    }
+//    @Transactional
+//    public Feedback updateFeedback(int id, NewFeedbackDTO dto) {
+//        Feedback feedback = findFeedbackById(id);
+//        feedback.setFeedbackText(dto.getFeedbackText());
+//        return feedbackRepo.save(feedback);
+//    }
 
     @Transactional
     public void softDeleteFeedback(int id) {

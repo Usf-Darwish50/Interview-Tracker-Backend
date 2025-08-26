@@ -4,6 +4,8 @@ package com.example.Interview_Tracker.Feedback.Model;
 import com.example.Interview_Tracker.Candidate.Model.Candidate;
 import com.example.Interview_Tracker.Stage.Model.Stage;
 import com.example.Interview_Tracker.User.Model.Interviewer;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.SQLDelete;
@@ -27,15 +29,8 @@ public class Feedback {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "candidate_id", nullable = false)
+    @JsonIgnore
     private Candidate candidate;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "stage_id", nullable = false)
-    private Stage stage;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "interviewer_id", nullable = false)
-    private Interviewer interviewer;
 
     @Column(name = "is_deleted")
     private boolean isDeleted = false;

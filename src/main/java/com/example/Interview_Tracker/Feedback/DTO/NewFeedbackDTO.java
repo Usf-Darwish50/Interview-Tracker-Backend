@@ -12,10 +12,4 @@ public class NewFeedbackDTO {
 
     @NotNull(message = "Candidate ID is required.")
     private Integer candidateId;
-
-    @NotNull(message = "Stage ID is required.")
-    private Integer stageId;
-
-    @NotNull(message = "Interviewer ID is required.")
-    private Integer interviewerId;
 }
