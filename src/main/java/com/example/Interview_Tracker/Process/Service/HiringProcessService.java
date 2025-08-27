@@ -7,6 +7,7 @@ import com.example.Interview_Tracker.Process.DTO.HiringProcessDTO;
 import com.example.Interview_Tracker.Process.DTO.NewHiringProcessDTO;
 import com.example.Interview_Tracker.Process.Model.HiringProcess;
 import com.example.Interview_Tracker.Process.Repository.HiringProcessRepo;
+import com.example.Interview_Tracker.User.Model.Interviewer;
 import com.example.Interview_Tracker.User.Model.Manager;
 import com.example.Interview_Tracker.User.Repository.ManagerRepo;
 import com.example.Interview_Tracker.enums.ProcessStatus;
@@ -126,6 +127,13 @@ public class HiringProcessService {
                 .orElseThrow(() -> new ResourceNotFoundException("Hiring Process with id " + processId + " not found.", ErrorCode.RESOURCE_NOT_FOUND));
 
         return process.getCandidates().size();
+    }
+
+    public List<Interviewer> findInterviewersByProcessId(int processId) {
+        HiringProcess process = this.processRepo.findByProcessIdAndIsDeletedFalse(processId)
+                .orElseThrow(() -> new ResourceNotFoundException("Hiring Process with id " + processId + " not found.", ErrorCode.RESOURCE_NOT_FOUND));
+
+        return process.getInterviewers();
     }
 
     // New method to update a process's status

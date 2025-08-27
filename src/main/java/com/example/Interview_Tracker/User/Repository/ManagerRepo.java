@@ -13,4 +13,7 @@ public interface ManagerRepo extends JpaRepository<Manager,Integer> {
 
     // Method to find a specific manager by ID, only if they are not deleted
     Optional<Manager> findByManagerIdAndIsDeletedFalse(int id);
+
+    Optional<Manager> findByUsernameAndPassword(String username, String password);
+
 }

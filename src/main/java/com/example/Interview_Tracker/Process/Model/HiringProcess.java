@@ -2,6 +2,7 @@ package com.example.Interview_Tracker.Process.Model;
 
 import com.example.Interview_Tracker.Candidate.Model.Candidate;
 import com.example.Interview_Tracker.Stage.Model.Stage;
+import com.example.Interview_Tracker.User.Model.Interviewer;
 import com.example.Interview_Tracker.User.Model.Manager;
 import com.example.Interview_Tracker.enums.ProcessStatus;
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -61,6 +62,11 @@ public class HiringProcess {
     // Add this new list to link candidates to the process
     @OneToMany(mappedBy = "hiringProcess", fetch = FetchType.LAZY)
     private List<Candidate> candidates;
+
+    // New relationship: One process can have many interviewers
+    @OneToMany(mappedBy = "hiringProcess", fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<Interviewer> interviewers;
 
     @Column(name = "is_deleted")
     private boolean isDeleted = false;

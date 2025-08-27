@@ -1,6 +1,7 @@
 package com.example.Interview_Tracker.User.Model;
 
 import com.example.Interview_Tracker.Process.Model.HiringProcess;
+import com.example.Interview_Tracker.enums.Role;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
@@ -39,6 +40,10 @@ public class Manager {
 
     @Column(name = "is_deleted")
     private boolean isDeleted = false;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role", nullable = false)
+    private Role role = Role.MANAGER;
 
     // Establishing the One-to-Many relationship with HiringProcess
     // Change the relationship to a Set and initialize it

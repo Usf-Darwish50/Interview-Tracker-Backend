@@ -7,6 +7,7 @@ import com.example.Interview_Tracker.Process.Model.HiringProcess;
 import com.example.Interview_Tracker.Process.Service.HiringProcessService;
 import com.example.Interview_Tracker.Stage.Model.Stage;
 import com.example.Interview_Tracker.Stage.Service.StageService;
+import com.example.Interview_Tracker.User.Model.Interviewer;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -82,6 +83,14 @@ public class HiringProcessController {
         List<Stage> stages = stageService.findAllStagesByProcessId(processId);
         return ResponseEntity.ok(stages);
     }
+
+
+    @GetMapping("/{processId}/interviewers")
+    public ResponseEntity<List<Interviewer>> getInterviewersByProcessId(@PathVariable int processId) {
+        List<Interviewer> interviewers = hiringProcessService.findInterviewersByProcessId(processId);
+        return ResponseEntity.ok(interviewers);
+    }
+
     private HiringProcessDTO convertToDto(HiringProcess entity) {
         HiringProcessDTO dto = new HiringProcessDTO();
         dto.setProcessId(entity.getProcessId());

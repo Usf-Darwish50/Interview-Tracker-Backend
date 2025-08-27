@@ -1,6 +1,8 @@
 package com.example.Interview_Tracker.User.Model;
 
+import com.example.Interview_Tracker.Process.Model.HiringProcess;
 import com.example.Interview_Tracker.Stage.Model.Stage;
+import com.example.Interview_Tracker.enums.Role;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
@@ -41,10 +43,17 @@ public class Interviewer {
     @Column(name = "is_deleted")
     private boolean isDeleted = false;
 
-
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role", nullable = false)
+    private Role role = Role.INTERVIEWER;
 
     @OneToMany(mappedBy = "interviewer")
     @JsonIgnore
     private Set<Stage> assignedStages;
 
+    // New relationship: Many interviewers can be assigned to one process
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "process_id")
+    @JsonIgnore
+    private HiringProcess hiringProcess;
 }

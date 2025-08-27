@@ -2,6 +2,7 @@
 package com.example.Interview_Tracker.User.Controller;
 
 
+import com.example.Interview_Tracker.User.DTO.InterviewerAssignmentResponseDTO;
 import com.example.Interview_Tracker.User.Model.Interviewer;
 import com.example.Interview_Tracker.User.Service.InterviewerService;
 import jakarta.validation.Valid;
@@ -42,5 +43,18 @@ public class InterviewerController {
     public ResponseEntity<Void> softDeleteInterviewerById(@PathVariable int id) {
         interviewerService.softDeleteInterviewerById(id);
         return ResponseEntity.noContent().build();
+    }
+
+    // New endpoint to assign an interviewer to a process
+    @PutMapping("/{interviewerId}/assign-process/{processId}")
+    public ResponseEntity<InterviewerAssignmentResponseDTO> assignInterviewerToProcess(@PathVariable int interviewerId, @PathVariable int processId) {
+        InterviewerAssignmentResponseDTO responseDTO = interviewerService.assignInterviewerToProcess(interviewerId, processId);
+        return ResponseEntity.ok(responseDTO);
+    }
+
+    @PutMapping("/{interviewerId}/unassign-process")
+    public ResponseEntity<Interviewer> unassignInterviewerFromProcess(@PathVariable int interviewerId) {
+        Interviewer updatedInterviewer = interviewerService.unassignInterviewerFromProcess(interviewerId);
+        return ResponseEntity.ok(updatedInterviewer);
     }
 }

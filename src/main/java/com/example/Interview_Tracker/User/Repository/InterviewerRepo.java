@@ -16,4 +16,7 @@ public interface InterviewerRepo extends JpaRepository<Interviewer, Integer> {
 
     // Method to find a specific interviewer by ID, only if they are not deleted
     Optional<Interviewer> findByInterviewerIdAndIsDeletedFalse(int id);
+
+    Optional<Interviewer> findByUsernameAndPassword(String username, String password);
 }
+
